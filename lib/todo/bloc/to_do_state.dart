@@ -4,6 +4,18 @@ enum ScreenStatus { initial, emptyData, loading, success }
 
 enum TaskFilterType { all, completed, notCompleted }
 
+
+String getTaskFilterTypeName(TaskFilterType taskFilterType ){
+  switch(taskFilterType){
+    case TaskFilterType.all:
+     return 'Все';
+     case TaskFilterType.completed:
+     return 'Выполненные';
+     case TaskFilterType.notCompleted:
+     return 'Не выполненные';
+  }
+}
+
 class ToDoState extends Equatable {
   final ScreenStatus screenStatus;
   final List<TaskModel> listOfTasks;

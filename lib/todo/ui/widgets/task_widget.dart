@@ -30,7 +30,15 @@ class TaskWidget extends StatelessWidget {
         ),
       ]),
       child: ListTile(
-        title: Text(capitalizeFirstLetter(taskModel.taskTitle)),
+        title: Text(
+          capitalizeFirstLetter(taskModel.taskTitle),
+          style: TextStyle(
+            color: taskModel.isDone ? Colors.black54 : Colors.black,
+            decoration: taskModel.isDone
+                ? TextDecoration.lineThrough
+                : TextDecoration.none,
+          ),
+        ),
         trailing: Checkbox(
             value: taskModel.isDone,
             onChanged: (value) {
