@@ -29,3 +29,10 @@ final class ChangeTaskStatus extends ToDoEvent {
 
   const ChangeTaskStatus( {required this.checkBoxValue,required this.uuid});
 }
+
+
+final class FilterTasks extends ToDoEvent{
+  final TaskFilterType taskFilterType;
+
+  const FilterTasks({required this.taskFilterType});
+}

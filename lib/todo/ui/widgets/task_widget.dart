@@ -1,4 +1,3 @@
-import 'package:aiplus_to_do/app/app.dart';
 import 'package:aiplus_to_do/todo/bloc/to_do_bloc.dart';
 import 'package:aiplus_to_do/todo/domain/model/task_model.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +8,19 @@ class TaskWidget extends StatelessWidget {
   final TaskModel taskModel;
   const TaskWidget({super.key, required this.taskModel});
 
+  String capitalizeFirstLetter(String text) {
+    if (text.isEmpty) {
+      return text;
+    }
+    return text[0].toUpperCase() + text.substring(1).toLowerCase();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Slidable(
       endActionPane:
-          ActionPane(motion: const ScrollMotion(), extentRatio: 0.5, children: [
+          ActionPane(motion: const ScrollMotion(), extentRatio: 0.3, children: [
         SlidableAction(
-          spacing: 1,
           onPressed: (context) =>
               context.read<ToDoBloc>().add(DeleteTask(uuid: taskModel.uuid)),
           backgroundColor: const Color(0xFFFE4A49),
@@ -25,7 +30,7 @@ class TaskWidget extends StatelessWidget {
         ),
       ]),
       child: ListTile(
-        title: Text(taskModel.taskTitle),
+        title: Text(capitalizeFirstLetter(taskModel.taskTitle)),
         trailing: Checkbox(
             value: taskModel.isDone,
             onChanged: (value) {

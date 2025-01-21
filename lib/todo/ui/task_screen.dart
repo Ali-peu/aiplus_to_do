@@ -81,27 +81,46 @@ class _TaskScreenState extends State<TaskScreen> {
           }),
       body: BlocBuilder<ToDoBloc, ToDoState>(
         builder: (context, state) {
-          if (state.screenStatus == ScreenStatus.initial ||
-              state.screenStatus == ScreenStatus.loading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (state.screenStatus == ScreenStatus.emptyData) {
-            return const Center(child: Text('Добавьте задачу, пока пусто'));
-          }
-          if (state.screenStatus == ScreenStatus.success) {
-            final filteredTasks = _filterTasks(state);
-            return ListView.builder(
-              itemCount: filteredTasks.length,
-              itemBuilder: (context, index) {
-                return TaskWidget(taskModel: filteredTasks[index]);
-              },
-            );
-          }
-
-          return const Center(child: Text('Что то пошло не так'));
+          return Column(
+            children: [
+              Row(
+                children: TaskFilterType.values
+                    .map((e) => TextButton(
+                        onPressed: () {
+                          context
+                              .read<ToDoBloc>()
+                              .add(FilterTasks(taskFilterType: e));
+                        },
+                        child: Text(e.name)))
+                    .toList(),
+              ),
+              Expanded(child: taskScreenList(state)),
+            ],
+          );
         },
       ),
     );
+  }
+
+  Widget taskScreenList(ToDoState state) {
+    if (state.screenStatus == ScreenStatus.initial ||
+        state.screenStatus == ScreenStatus.loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state.screenStatus == ScreenStatus.emptyData) {
+      return const Center(child: Text('Добавьте задачу, пока пусто'));
+    }
+    if (state.screenStatus == ScreenStatus.success) {
+      final filteredTasks = _filterTasks(state);
+      return ListView.builder(
+        itemCount: filteredTasks.length,
+        itemBuilder: (context, index) {
+          return TaskWidget(taskModel: filteredTasks[index]);
+        },
+      );
+    }
+
+    return const Center(child: Text('Что то пошло не так'));
   }
 }

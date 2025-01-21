@@ -11,13 +11,21 @@ class ToDoBloc extends Bloc<ToDoEvent, ToDoState> {
   ToDoBloc({required SharedPrefLocalDb sharedPrefLocalDb})
       : _sharedPrefLocalDb = sharedPrefLocalDb,
         super(const ToDoState()) {
-    on<FetchData>((event, emit) async => await _fetchData(emit));
+    on<FetchData>((event, emit) async => await _onFetchData(emit));
 
     on<AddTask>(_addTask);
 
-    on<DeleteTask>((event, emit) => _deleteTask(event, emit));
+    on<DeleteTask>((event, emit) => _onDeleteTask(event, emit));
+
+    on<FilterTasks>((event, emit) => _onFilterTasks(event, emit));
+
 
     on<ChangeTaskStatus>((event, emit) => _onChangeTaskStatus(event, emit));
+  }
+
+    Future<void> _onFilterTasks(FilterTasks  event, Emitter<ToDoState> emit) async {
+
+    emit(state.copyWith( taskFilterType: event.taskFilterType));
   }
 
   Future<void> _onChangeTaskStatus(
@@ -34,7 +42,7 @@ class ToDoBloc extends Bloc<ToDoEvent, ToDoState> {
         screenStatus: ScreenStatus.success, listOfTasks: updatedList));
   }
 
-  Future<void> _deleteTask(DeleteTask event, Emitter<ToDoState> emit) async {
+  Future<void> _onDeleteTask(DeleteTask event, Emitter<ToDoState> emit) async {
     await _sharedPrefLocalDb.deleteTask(event.uuid);
     final listOffTask = await _sharedPrefLocalDb.getTasks();
 
@@ -42,7 +50,7 @@ class ToDoBloc extends Bloc<ToDoEvent, ToDoState> {
         screenStatus: ScreenStatus.success, listOfTasks: listOffTask));
   }
 
-  Future<void> _fetchData(Emitter<ToDoState> emit) async {
+  Future<void> _onFetchData(Emitter<ToDoState> emit) async {
     final data = await _sharedPrefLocalDb.getTasks();
     emit(state.copyWith(
         screenStatus: (data == null || data.isEmpty)
