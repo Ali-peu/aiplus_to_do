@@ -6,11 +6,26 @@ sealed class ToDoEvent {
 
 final class AddTask extends ToDoEvent {
   final String taskTitle;
+  final bool isDone;
 
-  AddTask({required this.taskTitle});
+  const AddTask({required this.taskTitle, required this.isDone});
 }
 
+final class FetchData extends ToDoEvent {
+  const FetchData();
+}
 
-final class FetchData extends ToDoEvent{
+final class DeleteTask extends ToDoEvent {
+  final String uuid;
+
+  const DeleteTask({required this.uuid});
+}
+
+final class ChangeTaskStatus extends ToDoEvent {
+  final bool checkBoxValue;
+  final String uuid;
   
+
+
+  const ChangeTaskStatus( {required this.checkBoxValue,required this.uuid});
 }

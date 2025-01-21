@@ -3,15 +3,29 @@ import 'dart:developer';
 
 import 'package:aiplus_to_do/todo/domain/model/task_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class SharedPrefLocalDb {
   final SharedPreferences sharedPrefInstance;
 
   SharedPrefLocalDb({required this.sharedPrefInstance});
 
-  Future<void> addTask(TaskModel taskModel) async {
+  Future<void> addTask(
+      {required String taskTitle, required bool isDone}) async {
+    final TaskModel newTaskModel = TaskModel.newTaskModel(isDone, taskTitle);
     await sharedPrefInstance.setString(
-        taskModel.uuid, jsonEncode(taskModel.toJson()));
+        newTaskModel.uuid, jsonEncode(newTaskModel.toJson()));
+  }
+
+  Future<void> editTaskStatus(
+      {required String uuid, required bool isDone}) async {
+    final data = sharedPrefInstance.getString(uuid);
+    if (data != null) {
+      final task = TaskModel.fromJson(jsonDecode(data));
+      await sharedPrefInstance.remove(task.uuid);
+      await sharedPrefInstance.setString(
+          task.uuid, jsonEncode(task.copyWith(isDone: isDone).toJson()));
+    }
   }
 
   Future<TaskModel?> getTaskByUUID(String uuid) async {
@@ -22,7 +36,7 @@ class SharedPrefLocalDb {
     return null;
   }
 
-  Future<List<TaskModel>> getTasks() async {
+  Future<List<TaskModel>?> getTasks() async {
     final keys = sharedPrefInstance.getKeys();
     final tasks = <TaskModel>[];
 

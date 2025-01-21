@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 class TaskModel {
   final String taskTitle;
   final String uuid;
@@ -11,6 +13,11 @@ class TaskModel {
       required this.isDone,
       required this.createdAt,
       required this.deletedAt});
+
+  TaskModel.newTaskModel(this.isDone, this.taskTitle)
+      : uuid = const Uuid().v4(),
+        createdAt = DateTime.now(),
+        deletedAt = null;
 
   TaskModel copyWith(
       {String? taskTitle,
