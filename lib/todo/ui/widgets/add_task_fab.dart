@@ -31,8 +31,11 @@ class _AddTaskFabState extends State<AddTaskFab> {
                   ),
                   IconButton(
                       onPressed: () {
-                        blocValue.add(
-                            AddTask(taskTitle: controller.text, isDone: false));
+                        if (controller.text.isNotEmpty) {
+                          blocValue.add(AddTask(
+                              taskTitle: controller.text, isDone: false));
+                          controller.clear();
+                        }
                       },
                       icon: Container(
                         height: 60,
@@ -60,7 +63,6 @@ class _AddTaskFabState extends State<AddTaskFab> {
     return FloatingActionButton(
         backgroundColor: Colors.white,
         child: const Icon(Icons.add, color: Colors.black),
-        
         onPressed: () {
           modalBottomSheetForAddTask(context, context.read<ToDoBloc>());
         });
